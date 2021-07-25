@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Houdini HDA backups
+otls/backup/
+
+# PyCharm project data
+.idea/
