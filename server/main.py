@@ -39,6 +39,7 @@ app = FastAPI(
 @app.on_event('startup')
 async def configure():
     configure_logging()
+    logger.info('Server started.')
 
 
 from starlette.requests import Request
@@ -46,6 +47,7 @@ from fastapi import Depends
 
 
 async def log_json(request: Request):
+    print(await request.json())
     print(await request.json())
 
 
