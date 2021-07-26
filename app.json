@@ -1,0 +1,17 @@
+{
+  "name": "Houdini Telegram Notifier",
+  "description": "Stateless proxy server.",
+  "image": "heroku/python",
+  "repository": "https://github.com/anvdev/Houdini-Telegram-Notifier",
+  "keywords": [
+    "python",
+    "fastapi"
+  ],
+  "env": {
+  },
+  "environments": {
+    "test": {
+      "scripts": {}
+    }
+  }
+}
