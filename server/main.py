@@ -41,6 +41,16 @@ async def configure():
     configure_logging()
 
 
+from starlette.requests import Request
+
+
+@app.middleware('http')
+async def do_test(request: Request, call_next):
+    print(await request.json())
+    response = await call_next(request)
+    return response
+
+
 @app.post('/api/v1/sendMessage', response_model=Status)
 async def send_message(message: IncomingMessage):
     out_message = OutgoingMessage.parse_obj(message)
