@@ -28,4 +28,4 @@ logger = logging.getLogger(__name__)
 def run():
     configure_logging()
     logger.info('Server started.')
-    uvicorn.run('server.main:app', host='localhost', port=8080)
+    uvicorn.run('server.main:app', host='0.0.0.0', port=80)
