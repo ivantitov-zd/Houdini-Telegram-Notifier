@@ -42,16 +42,14 @@ async def configure():
 
 
 from starlette.requests import Request
+from fastapi import Depends
 
 
-@app.middleware('http')
-async def do_test(request: Request, call_next):
+async def log_json(request: Request):
     print(await request.json())
-    response = await call_next(request)
-    return response
 
 
-@app.post('/api/v1/sendMessage', response_model=Status)
+@app.post('/api/v1/sendMessage', response_model=Status, dependencies=[Depends(log_json)])
 async def send_message(message: IncomingMessage):
     out_message = OutgoingMessage.parse_obj(message)
     if message.custom_bot_api_token:
