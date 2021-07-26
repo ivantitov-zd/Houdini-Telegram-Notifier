@@ -20,6 +20,7 @@ import logging
 
 from fastapi import FastAPI
 
+from .log import configure_logging
 from .models import IncomingMessage, OutgoingMessage, Status
 from .services import TelegramBot
 from .settings import settings
@@ -33,6 +34,11 @@ app = FastAPI(
     description='Stateless proxy server for Telegram Bot',
     version='1.0.0'
 )
+
+
+@app.on_event('startup')
+async def configure():
+    configure_logging()
 
 
 @app.post('/api/v1/sendMessage', response_model=Status)
