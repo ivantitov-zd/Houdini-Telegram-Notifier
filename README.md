@@ -3,4 +3,4 @@
 - Stateless proxy server
 - Set of HDA for different contexts
 
-You can use your own bot created with @BotFather.
+You can use your own bot created with [@BotFather](https://t.me/BotFather).
