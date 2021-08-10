@@ -20,4 +20,4 @@ from pydantic import BaseModel
 
 
 class Status(BaseModel):
-    delivered: bool
+    delivered: bool = True

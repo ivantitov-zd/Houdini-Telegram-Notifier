@@ -16,24 +16,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import aiohttp
+import aiogram
 
+from ..settings import settings
 from ..models import OutgoingMessage
 
+default_bot = aiogram.Bot(settings.telegram_bot_api_token, timeout=60)
 
-class TelegramBot:
-    __slots__ = 'api_token', 'session'
 
-    def __init__(self, api_token: str):
-        self.api_token = api_token
-        self.session = None
-
-    async def send_message(self, message: OutgoingMessage):
-        if self.session is None:
-            timeout = aiohttp.ClientTimeout(total=60)
-            self.session = aiohttp.ClientSession(timeout=timeout)
-
-        url = f'https://api.telegram.org/bot{self.api_token}/sendMessage'
-        data = message.dict(exclude_unset=True, exclude_defaults=True)
-        response = await self.session.post(url, json=data)
-        return response
+async def send_message(message: OutgoingMessage, bot=default_bot) -> aiogram.types.Message:
+    # Todo: Split large message into multiple messages
+    return await bot.send_message(**message.dict(exclude_unset=True, exclude_defaults=True))
