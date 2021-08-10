@@ -18,37 +18,47 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
 
+import aiogram
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 
 from .log import configure_logging
 from .models import IncomingMessage, OutgoingMessage, Status
-from .services import TelegramBot
-from .settings import settings
+from .services import telegram
 
 logger = logging.getLogger(__name__)
-
-bot = TelegramBot(settings.bot_api_token)
 
 app = FastAPI(
     title='Houdini Telegram Notifier',
     description='Stateless proxy server for Telegram Bot',
-    version='1.0.0'
+    version='1.0.1'
 )
 
 
 @app.on_event('startup')
-async def configure():
+async def startup_event():
     configure_logging()
     logger.info('Server started.')
+
+
+@app.on_event('shutdown')
+async def shutdown_event():
+    await telegram.default_bot.close()
+    logger.info('Server stopped.')
+
+
+@app.get('/')
+async def root():
+    return RedirectResponse('https://github.com/anvdev/Houdini-Telegram-Notifier')
 
 
 @app.post('/api/v1/sendMessage', response_model=Status)
 async def send_message(message: IncomingMessage):
     out_message = OutgoingMessage.parse_obj(message)
     if message.custom_bot_api_token:
-        custom_bot = TelegramBot(message.custom_bot_api_token)
-        response = await custom_bot.send_message(out_message)
+        custom_bot = aiogram.Bot(message.custom_bot_api_token)
+        await telegram.send_message(out_message, custom_bot)
+        await custom_bot.close()
     else:
-        response = await bot.send_message(out_message)
-    response_data = await response.json()
-    return Status(delivered=response_data.get('ok', False))
+        await telegram.send_message(out_message)
+    return Status()

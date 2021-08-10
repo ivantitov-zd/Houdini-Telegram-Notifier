@@ -16,12 +16,24 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from pydantic import BaseSettings, Field
+import logging
+
+import requests
 
 
-class Settings(BaseSettings):
-    telegram_bot_api_token: str = Field(..., env='HOUDINI_TELEGRAM_NOTIFIER_BOT_API_TOKEN')
-    telegram_log_chat_id: str = Field(..., env='HOUDINI_TELEGRAM_NOTIFIER_LOG_CHAT_ID')
+class TelegramHandler(logging.Handler):
+    def __init__(self, api_token, chat_id):
+        super(TelegramHandler, self).__init__()
+        self._api_token = api_token
+        self._chat_id = chat_id
+        self._session = requests.Session()
 
-
-settings = Settings()
+    def emit(self, record):
+        url = f'https://api.telegram.org/bot{self._api_token}/sendMessage'
+        message = {
+            'chat_id': self._chat_id,
+            'text': self.format(record),
+            'disable_notification': record.levelno != logging.CRITICAL,
+            'parse_mode': 'HTML'
+        }
+        self._session.post(url, json=message, timeout=(3.05, 5))

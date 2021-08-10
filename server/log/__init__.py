@@ -16,12 +16,4 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-from pydantic import BaseSettings, Field
-
-
-class Settings(BaseSettings):
-    telegram_bot_api_token: str = Field(..., env='HOUDINI_TELEGRAM_NOTIFIER_BOT_API_TOKEN')
-    telegram_log_chat_id: str = Field(..., env='HOUDINI_TELEGRAM_NOTIFIER_LOG_CHAT_ID')
-
-
-settings = Settings()
+from .config import configure_logging
