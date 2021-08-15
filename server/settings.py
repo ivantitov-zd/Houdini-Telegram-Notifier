@@ -20,8 +20,10 @@ from pydantic import BaseSettings, Field
 
 
 class Settings(BaseSettings):
-    telegram_bot_api_token: str = Field(..., env='HOUDINI_TELEGRAM_NOTIFIER_BOT_API_TOKEN')
+    telegram_api_id: str = Field(..., env='HOUDINI_TELEGRAM_NOTIFIER_API_ID')
+    telegram_api_hash: str = Field(..., env='HOUDINI_TELEGRAM_NOTIFIER_API_HASH')
     telegram_log_chat_id: str = Field(..., env='HOUDINI_TELEGRAM_NOTIFIER_LOG_CHAT_ID')
+    telegram_bot_token: str = Field(..., env='HOUDINI_TELEGRAM_NOTIFIER_BOT_TOKEN')
 
 
 settings = Settings()

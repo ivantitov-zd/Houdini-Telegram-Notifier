@@ -16,14 +16,23 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
-import aiogram
+import pyrogram
 
 from ..settings import settings
 from ..models import OutgoingMessage
 
-default_bot = aiogram.Bot(settings.telegram_bot_api_token, timeout=60)
+main_client = pyrogram.Client(
+    session_name=':memory:',
+    api_id=settings.telegram_api_id,
+    api_hash=settings.telegram_api_hash,
+    app_version='1.1',
+    bot_token=settings.telegram_bot_token
+)
 
 
-async def send_message(message: OutgoingMessage, bot=default_bot) -> aiogram.types.Message:
+async def send_message(
+        message: OutgoingMessage,
+        client: pyrogram.Client = main_client
+):
     # Todo: Split large message into multiple messages
-    return await bot.send_message(**message.dict(exclude_unset=True, exclude_defaults=True))
+    return await client.send_message(**message.dict(exclude_unset=True, exclude_defaults=True))

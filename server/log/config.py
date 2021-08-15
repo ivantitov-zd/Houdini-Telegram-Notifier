@@ -20,8 +20,9 @@ import logging
 from logging.handlers import QueueHandler, QueueListener
 from queue import SimpleQueue as Queue
 
-from server.log.telegram_handler import TelegramHandler
-from server.settings import settings
+from ..services import telegram
+from ..settings import settings
+from .telegram_handler import TelegramHandler
 
 
 def configure_logging():
@@ -30,10 +31,14 @@ def configure_logging():
 
     formatter = logging.Formatter(
         '<b>Level</b>: %(levelname)s\n'
-        '<b>Message</b>: %(message)s\n'
+        '<b>Logger</b>: %(name)s\n'
+        '<b>Message</b>: %(message)s'
     )
 
-    telegram_handler = TelegramHandler(settings.telegram_bot_api_token, settings.telegram_log_chat_id)
+    telegram_handler = TelegramHandler(
+        client=telegram.main_client,
+        chat_id=int(settings.telegram_log_chat_id)
+    )
     telegram_handler.setLevel(logging.INFO)
     telegram_handler.setFormatter(formatter)
 

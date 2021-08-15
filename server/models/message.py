@@ -16,21 +16,35 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 """
 
+from enum import Enum
 from typing import Optional
 
 from pydantic import BaseModel
+
+
+class Service(str, Enum):
+    Telegram = 'telegram'
+
+
+class AttachmentType(str, Enum):
+    Image = 'image'
+    Document = 'document'
 
 
 class MessageBase(BaseModel):
     chat_id: str
     text: str
 
-    disable_web_page_preview: Optional[bool] = False
-    disable_notification: Optional[bool] = False
+    disable_web_page_preview: bool = False
+    disable_notification: bool = False
     parse_mode: Optional[str]
+
+    attachment_type: AttachmentType = AttachmentType.Document
+    attachment: Optional[str]  # Todo: Base64
 
 
 class IncomingMessage(MessageBase):
+    service: Optional[Service] = Service.Telegram
     custom_bot_api_token: Optional[str]
 
 
